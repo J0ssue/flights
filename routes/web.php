@@ -21,6 +21,7 @@ Route::get('/', function () {
 
 Route::post('/flights', [FlightController::class, 'store'])->name('flights.store');
 Route::delete('/flights', [FlightController::class, 'destroy'])->name('flights.destroy');
+Route::patch('/flights', [FlightController::class, 'update'])->name('flights.update');
 
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');

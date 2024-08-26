@@ -3,8 +3,18 @@ import FlightDisplayCard from "./FlightDisplayCard";
 interface Props {
     title: string;
     state?: "pre" | "post" | "normal";
-    flights: { title: string; description: string; id: string }[];
+    flights: {
+        title: string;
+        description: string;
+        id: string;
+        state: string;
+    }[];
     handleDelete: (id: string) => void;
+    handleMove: (
+        direction: "left" | "right",
+        id: string,
+        state: string
+    ) => void;
 }
 
 const SectionContainerLayout = ({
@@ -12,16 +22,23 @@ const SectionContainerLayout = ({
     state,
     flights,
     handleDelete,
+    handleMove,
 }: Props) => {
     var FlightsElements = flights.map((flight) => (
         <FlightDisplayCard
             id={flight.id}
             key={flight.id}
+            state={flight.state}
             type={state || "normal"}
             title={flight.title}
             description={flight.description}
             className="mb-2"
             handleDelete={handleDelete}
+            handleMove={(
+                direction: "left" | "right",
+                id: string,
+                state: string
+            ) => handleMove(direction, id, state)}
         />
     ));
     return (

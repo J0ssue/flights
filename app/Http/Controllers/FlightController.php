@@ -60,9 +60,10 @@ class FlightController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateFlightRequest $request, Flight $flight)
+    public function update(UpdateFlightRequest $request)
     {
-        //
+
+        Flight::findOrFail($request->data["id"])->update(["state" => $request->data["state"]]);
     }
 
     /**

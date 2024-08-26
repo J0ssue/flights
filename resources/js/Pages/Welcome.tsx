@@ -1,47 +1,10 @@
-import { Link, Head, router, useForm } from "@inertiajs/react";
+import { Head, router } from "@inertiajs/react";
 import { PageProps } from "@/types";
-import {
-    DndContext,
-    useDroppable,
-    useDraggable,
-    DragEndEvent,
-} from "@dnd-kit/core";
 import { useState } from "react";
 import SectionContainerLayout from "@/Components/SectionContainerLayout";
 import CreateFlightForm from "@/Components/CreateFlightForm";
 import DeleteFlightForm from "@/Components/DeleteFlightForm";
-
-function Draggable(props: { children?: JSX.Element }) {
-    const { attributes, listeners, setNodeRef, transform } = useDraggable({
-        id: "draggable",
-    });
-    const style = transform
-        ? {
-              transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`,
-          }
-        : undefined;
-
-    return (
-        <button ref={setNodeRef} style={style} {...listeners} {...attributes}>
-            {props.children}
-        </button>
-    );
-}
-
-function Droppable(props: { children?: JSX.Element }) {
-    const { isOver, setNodeRef } = useDroppable({
-        id: "droppable",
-    });
-    const style = {
-        color: isOver ? "green" : undefined,
-    };
-
-    return (
-        <div ref={setNodeRef} style={style}>
-            {props.children}
-        </div>
-    );
-}
+import Alert from "@/Components/Alert";
 
 export default function Welcome({
     auth,
@@ -74,10 +37,32 @@ export default function Welcome({
         setIdForDelete(null);
     }
 
+    function handleMove(direction: string, id: string, state: string) {
+        if (direction === "left") {
+            if (state === "pre") return;
+            else if (state === "normal") {
+                router.patch("/flights", { data: { id, state: "pre" } });
+            } else if (state === "post") {
+                router.patch("/flights", { data: { id, state: "normal" } });
+            }
+        }
+        if (direction === "right") {
+            if (state === "post") return;
+            else if (state === "normal") {
+                router.patch("/flights", {
+                    data: { id, state: "post" },
+                });
+            } else if (state === "pre") {
+                router.patch("/flights", { data: { id, state: "normal" } });
+            }
+        }
+    }
+
     return (
         <>
             <Head title="Flights" />
             <div className="relative container h-full mx-auto bg-slate-100 py-[100px] px-10">
+                {/* <Alert message="Message" /> */}
                 <header className="flex justify-between">
                     <h1 className="font-bold">Flight Mission Control Tool</h1>
                     <button
@@ -95,6 +80,9 @@ export default function Welcome({
                         handleDelete={(id) => {
                             setIdForDelete(id);
                         }}
+                        handleMove={(direction, id, state) => {
+                            handleMove(direction, id, state);
+                        }}
                     />
                     <SectionContainerLayout
                         title="Flight"
@@ -102,11 +90,17 @@ export default function Welcome({
                         handleDelete={(id) => {
                             setIdForDelete(id);
                         }}
+                        handleMove={(direction, id, state) => {
+                            handleMove(direction, id, state);
+                        }}
                     />
                     <SectionContainerLayout
                         title="Post-Flight"
                         state="post"
                         flights={PostFlights}
+                        handleMove={(direction, id, state) => {
+                            handleMove(direction, id, state);
+                        }}
                         handleDelete={(id) => {
                             setIdForDelete(id);
                         }}

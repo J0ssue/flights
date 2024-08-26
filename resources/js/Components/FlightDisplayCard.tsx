@@ -4,9 +4,15 @@ interface Props {
     id: string;
     type: "pre" | "post" | "normal";
     title: string;
+    state: string;
     description: string;
     className: string;
     handleDelete: (id: string) => void;
+    handleMove: (
+        direction: "left" | "right",
+        id: string,
+        state: string
+    ) => void;
 }
 
 const FlightDisplayCard = ({
@@ -14,8 +20,10 @@ const FlightDisplayCard = ({
     title,
     description,
     id,
+    state,
     className,
     handleDelete,
+    handleMove,
 }: Props) => {
     var BorderColor = "border-blue-500";
     var BackgroundColor = "bg-blue-500";
@@ -45,6 +53,16 @@ const FlightDisplayCard = ({
                 </button>
             </div>
             <p className="mt-6">{description}</p>
+            <div className="flex justify-end gap-x-1">
+                <button
+                    className="px-2 border border-slate-500 rounded-md"
+                    onClick={() => handleMove("left", id, state)}
+                >{`<`}</button>
+                <button
+                    className="px-2 border border-slate-500 rounded-md"
+                    onClick={() => handleMove("right", id, state)}
+                >{`>`}</button>
+            </div>
         </div>
     );
 };
