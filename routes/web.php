@@ -1,18 +1,26 @@
 <?php
 
+use App\Http\Controllers\FlightController;
 use App\Http\Controllers\ProfileController;
+use App\Models\Flight;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
 Route::get('/', function () {
+    $flights = Flight::get();
+
     return Inertia::render('Welcome', [
+        'flights' => $flights,
         'canLogin' => Route::has('login'),
         'canRegister' => Route::has('register'),
         'laravelVersion' => Application::VERSION,
         'phpVersion' => PHP_VERSION,
     ]);
 });
+
+Route::post('/flights', [FlightController::class, 'store'])->name('flights.store');
+Route::delete('/flights', [FlightController::class, 'destroy'])->name('flights.destroy');
 
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
@@ -24,4 +32,4 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
